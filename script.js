@@ -22,8 +22,7 @@ const presets = {
 const ids = ["storage", "read", "egress", "requests", "deleted", "age", "restoreDays"];
 const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 const currencySelect = document.getElementById("currency");
-let selectedCurrency = localStorage.getItem("oci-cost-currency") || "AUD";
-if (!currencies[selectedCurrency]) selectedCurrency = "AUD";
+let selectedCurrency = "AUD";
 currencySelect.value = selectedCurrency;
 
 function formatMoney(valueUsd, unitRate = false) {
@@ -123,7 +122,6 @@ document.getElementById("presets").addEventListener("click", event => {
 function markCustom() { document.querySelectorAll("[data-preset]").forEach(item => item.classList.toggle("active", item.dataset.preset === "custom")); }
 currencySelect.addEventListener("change", () => {
   selectedCurrency = currencySelect.value;
-  localStorage.setItem("oci-cost-currency", selectedCurrency);
   render();
 });
 render();
