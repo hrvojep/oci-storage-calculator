@@ -6,6 +6,7 @@
   <meta name="description" content="Interactive OCI Object Storage cost calculator for Standard, Infrequent Access, and Archive tiers." />
   <title>OCI Object Storage Cost Calculator</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="currency.css" />
 </head>
 <body>
   <header class="topbar">
@@ -20,7 +21,24 @@
         <h1>What will your objects<br />actually cost?</h1>
         <p class="intro">Compare OCI Standard, Infrequent Access, and Archive with the costs that hide behind the headline rate: retrieval, requests, transfer, and minimum retention.</p>
       </div>
-      <div class="hero-stamp"><strong>AUD</strong><span>Converted from OCI USD rates</span><span>1 USD = 1.4417 AUD</span></div>
+      <div class="hero-stamp">
+        <label for="currency">Display currency</label>
+        <div class="currency-select-wrap">
+          <select id="currency" aria-label="Display currency">
+            <option value="AUD">AUD</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="NZD">NZD</option>
+            <option value="SGD">SGD</option>
+            <option value="CAD">CAD</option>
+            <option value="JPY">JPY</option>
+          </select>
+          <span aria-hidden="true">↓</span>
+        </div>
+        <span>Converted from OCI USD rates</span>
+        <span id="exchangeRate">1 USD = 1.4428 AUD</span>
+      </div>
     </section>
 
     <section class="workbench" aria-label="OCI Object Storage calculator">
@@ -80,7 +98,7 @@
         <p class="summary-kicker">Lowest estimated route</p>
         <div class="winner-name" id="winnerName">Archive</div>
         <div class="total" id="winnerCost">$0.00</div>
-        <p class="summary-caption">estimated monthly · AUD</p>
+        <p class="summary-caption">estimated monthly · <span id="summaryCurrency">AUD</span></p>
         <div class="summary-breakdown" id="winnerBreakdown"></div>
         <div class="callout"><span>Why this wins</span><p id="winnerReason"></p></div>
         <p class="free-note">Uses public list prices and Always Free allowances. Taxes, negotiated discounts, replication, and region-specific exceptions are not included.</p>
@@ -105,12 +123,12 @@
     <section class="assumptions">
       <h2>Rates and assumptions</h2>
       <div class="assumption-grid">
-        <div><span>Standard</span><strong>A$0.0368</strong><p>per GB-month · converted from US$0.0255</p></div>
-        <div><span>Infrequent Access</span><strong>A$0.0144</strong><p>per GB-month · 31-day minimum · A$0.0144/GB retrieval</p></div>
-        <div><span>Archive</span><strong>A$0.00375</strong><p>per GB-month · 90-day minimum · restored copy billed Standard</p></div>
-        <div><span>Shared usage</span><strong>A$0.00490</strong><p>per 10K requests after 50K · egress A$0.0123/GB after 10 TB</p></div>
+        <div><span>Standard</span><strong id="standardRate">AUD 0.03679</strong><p>per GB-month · OCI base rate USD 0.0255</p></div>
+        <div><span>Infrequent Access</span><strong id="infrequentRate">AUD 0.01443</strong><p>per GB-month · 31-day minimum · <span id="retrievalRate">AUD 0.01443</span>/GB retrieval</p></div>
+        <div><span>Archive</span><strong id="archiveRate">AUD 0.00375</strong><p>per GB-month · 90-day minimum · restored copy billed Standard</p></div>
+        <div><span>Shared usage</span><strong id="requestRate">AUD 0.00491</strong><p>per 10K requests after 50K · egress <span id="egressRate">AUD 0.01226</span>/GB after 10 TB</p></div>
       </div>
-      <p class="disclaimer">Directional planning tool, not an Oracle quote. OCI public USD prices are converted at 1 USD = 1.4417 AUD (6 July 2026); exchange rates fluctuate. GB/TB conversions use 1 TB = 1,024 GB. Early-deletion estimates assume the entered deleted volume is removed at the entered average age. Verify final estimates against your tenancy, region, and contract.</p>
+      <p class="disclaimer">Directional planning tool, not an Oracle quote. OCI public USD prices use <span id="disclaimerRate">the selected display currency</span> based on RBA reference rates published 6 July 2026; exchange rates fluctuate. GB/TB conversions use 1 TB = 1,024 GB. Early-deletion estimates assume the entered deleted volume is removed at the entered average age. Verify final estimates against your tenancy, region, and contract.</p>
     </section>
   </main>
   <footer><span>OCI COST LAB</span><a href="#top">Back to top ↑</a></footer>
