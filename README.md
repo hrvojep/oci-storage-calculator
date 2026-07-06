@@ -24,12 +24,14 @@ npm run build
 
 The static Pages output is written to `dist/server/public`.
 
-## Cloudflare Pages
+## Cloudflare Workers
 
-- Framework preset: `None`
 - Build command: `npm run build`
-- Build output directory: `dist/server/public`
-- Production branch: `main`
+- Deploy command: `npx wrangler deploy`
+- Configuration: `wrangler.jsonc`
+
+The Git integration deploys the Worker and static assets together. The
+production branch is `main`.
 
 This is a directional planning tool, not an Oracle quote. Verify estimates
 against your OCI tenancy, region, and contract before committing budget.
