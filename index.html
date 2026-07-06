@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive OCI Object Storage cost calculator for Standard, Infrequent Access, and Archive tiers." />
+  <title>OCI Object Storage Cost Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="OCI Cost Lab home"><span class="brand-mark"></span><span>OCI COST LAB</span></a>
+    <a class="source-link" href="https://www.oracle.com/cloud/price-list/#pricing-storage" target="_blank" rel="noreferrer">Pricing source ↗</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow"><span></span> Cost model · Object Storage</p>
+        <h1>What will your objects<br />actually cost?</h1>
+        <p class="intro">Compare OCI Standard, Infrequent Access, and Archive with the costs that hide behind the headline rate: retrieval, requests, transfer, and minimum retention.</p>
+      </div>
+      <div class="hero-stamp"><strong>AUD</strong><span>Converted from OCI USD rates</span><span>1 USD = 1.4417 AUD</span></div>
+    </section>
+
+    <section class="workbench" aria-label="OCI Object Storage calculator">
+      <div class="controls">
+        <div class="section-heading"><span>01</span><div><p>Workload</p><h2>Shape your storage</h2></div></div>
+
+        <fieldset class="preset-fieldset">
+          <legend>Start with a workload</legend>
+          <div class="preset-grid" id="presets">
+            <button type="button" data-preset="active" class="active">Active assets</button>
+            <button type="button" data-preset="backup">Backups</button>
+            <button type="button" data-preset="logs">Compliance logs</button>
+            <button type="button" data-preset="custom">Custom</button>
+          </div>
+        </fieldset>
+
+        <div class="input-grid">
+          <div class="control-block wide">
+            <div class="control-meta"><label for="storage">Average data stored</label><output id="storageOut">10 TB</output></div>
+            <input id="storage" type="range" min="0" max="1000" value="10" step="1" />
+            <div class="bounds"><span>0 TB</span><span>1 PB</span></div>
+          </div>
+          <div class="control-block">
+            <label for="read">Data read / restored monthly</label>
+            <div class="number-wrap"><input id="read" type="number" min="0" value="2" step="0.1" /><span>TB</span></div>
+            <p>Triggers retrieval cost on Infrequent Access.</p>
+          </div>
+          <div class="control-block">
+            <label for="egress">Outbound transfer monthly</label>
+            <div class="number-wrap"><input id="egress" type="number" min="0" value="2" step="0.1" /><span>TB</span></div>
+            <p>OCI includes the first 10 TB each month.</p>
+          </div>
+          <div class="control-block">
+            <label for="requests">Object requests monthly</label>
+            <div class="number-wrap"><input id="requests" type="number" min="0" value="2000000" step="10000" /><span>req</span></div>
+            <p>The first 50,000 requests are free.</p>
+          </div>
+          <div class="control-block">
+            <label for="deleted">Deleted or overwritten monthly</label>
+            <div class="number-wrap"><input id="deleted" type="number" min="0" value="0" step="0.1" /><span>TB</span></div>
+            <p>Used to estimate early-deletion penalties.</p>
+          </div>
+          <div class="control-block">
+            <label for="age">Average object age at deletion</label>
+            <div class="number-wrap"><input id="age" type="number" min="0" value="90" step="1" /><span>days</span></div>
+            <p>IA requires 31 days; Archive requires 90.</p>
+          </div>
+          <div class="control-block">
+            <label for="restoreDays">Archive restore window</label>
+            <div class="number-wrap"><input id="restoreDays" type="number" min="1" max="30" value="1" step="1" /><span>days</span></div>
+            <p>Restored Archive copies are billed as Standard.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="summary" aria-live="polite">
+        <p class="summary-kicker">Lowest estimated route</p>
+        <div class="winner-name" id="winnerName">Archive</div>
+        <div class="total" id="winnerCost">$0.00</div>
+        <p class="summary-caption">estimated monthly · AUD</p>
+        <div class="summary-breakdown" id="winnerBreakdown"></div>
+        <div class="callout"><span>Why this wins</span><p id="winnerReason"></p></div>
+        <p class="free-note">Uses public list prices and Always Free allowances. Taxes, negotiated discounts, replication, and region-specific exceptions are not included.</p>
+      </aside>
+    </section>
+
+    <section class="comparison" id="comparison">
+      <div class="section-heading"><span>02</span><div><p>Tier comparison</p><h2>Same workload, three storage choices</h2></div></div>
+      <div class="tier-cards" id="tierCards"></div>
+    </section>
+
+    <section class="math-section">
+      <div class="section-heading"><span>03</span><div><p>What moves the number</p><h2>See the bill, line by line</h2></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cost component</th><th>Standard</th><th>Infrequent Access</th><th>Archive</th></tr></thead>
+          <tbody id="costTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="assumptions">
+      <h2>Rates and assumptions</h2>
+      <div class="assumption-grid">
+        <div><span>Standard</span><strong>A$0.0368</strong><p>per GB-month · converted from US$0.0255</p></div>
+        <div><span>Infrequent Access</span><strong>A$0.0144</strong><p>per GB-month · 31-day minimum · A$0.0144/GB retrieval</p></div>
+        <div><span>Archive</span><strong>A$0.00375</strong><p>per GB-month · 90-day minimum · restored copy billed Standard</p></div>
+        <div><span>Shared usage</span><strong>A$0.00490</strong><p>per 10K requests after 50K · egress A$0.0123/GB after 10 TB</p></div>
+      </div>
+      <p class="disclaimer">Directional planning tool, not an Oracle quote. OCI public USD prices are converted at 1 USD = 1.4417 AUD (6 July 2026); exchange rates fluctuate. GB/TB conversions use 1 TB = 1,024 GB. Early-deletion estimates assume the entered deleted volume is removed at the entered average age. Verify final estimates against your tenancy, region, and contract.</p>
+    </section>
+  </main>
+  <footer><span>OCI COST LAB</span><a href="#top">Back to top ↑</a></footer>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "oci-object-storage-cost-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "python3 -m http.server 4173",
+    "build": "node build-static.mjs",
+    "start": "python3 -m http.server 4173 --directory dist/server/public"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "type": "module"
+}
