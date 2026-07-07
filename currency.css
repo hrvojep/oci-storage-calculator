@@ -1,3 +1,16 @@
+.brand-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.brand-dedication {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
 .hero-stamp {
   min-width: 190px;
   gap: 5px;
@@ -49,5 +62,25 @@
 
   .hero {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 620px) {
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-mark {
+    width: 25px;
+    height: 19px;
+  }
+
+  .brand-copy > span:first-child {
+    font-size: 10px;
+  }
+
+  .brand-dedication {
+    font-size: 7px;
+    letter-spacing: 0.04em;
   }
 }
